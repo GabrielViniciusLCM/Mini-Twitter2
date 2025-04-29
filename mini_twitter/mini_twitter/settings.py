@@ -27,6 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+
+
 
 # Application definition
 
@@ -40,6 +44,7 @@ INSTALLED_APPS = [
      'rest_framework',
     'rest_framework_simplejwt',
     'core',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +72,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
         },
+        'DIRS': [BASE_DIR / 'templates'], 
     },
 ]
 

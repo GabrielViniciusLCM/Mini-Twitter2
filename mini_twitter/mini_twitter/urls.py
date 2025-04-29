@@ -11,8 +11,9 @@ def home(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-   path('api/', include('core.urls')),
+    path('api/', include('core.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('', home),  # Adicionando o path vazio para renderizar a página inicial
+    path('', include('accounts.urls')),  # Adicionando o path vazio para renderizar a página inicial
+    path('accounts/', include('accounts.urls')),
 ]
