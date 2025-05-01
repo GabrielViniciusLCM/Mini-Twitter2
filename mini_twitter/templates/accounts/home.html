@@ -1,5 +1,7 @@
 <h2>Bem-vindo, {{ user.username }}!</h2>
 <p>Você está logado no Mini Twitter.</p>
+<a href="{% url 'feed' %}">Feed</a>
+<a href="{% url 'criar_post' %}">Postar</a>
 <form action="{% url 'logout' %}" method="POST">
     {% csrf_token %}
     <button type="submit">Logout</button>

@@ -1,0 +1,12 @@
+{% block content %}
+<h2>Feed</h2>
+<a href="{% url 'criar_post' %}">Criar nova postagem</a>
+<hr>
+{% for post in posts %}
+  <p><strong>{{ post.autor.username }}</strong>: {{ post.conteudo }}</p>
+  <small>{{ post.criado_em }}</small>
+  <hr>
+{% empty %}
+  <p>Nenhum post ainda.</p>
+{% endfor %}
+{% endblock %}

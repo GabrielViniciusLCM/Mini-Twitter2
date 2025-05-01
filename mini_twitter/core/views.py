@@ -1,11 +1,13 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 from .models import Post, User
 from .serializers import PostSerializer, UserSerializer
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all().order_by('-created_at')
+    queryset = Post.objects.all().order_by('-criado_em')
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -51,3 +53,17 @@ class UserViewSet(viewsets.ModelViewSet):
             return self.get_paginated_response(serializer.data)
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+    
+@login_required
+def criar_post(request):
+    if request.method == 'POST':
+        conteudo = request.POST.get('conteudo')
+        if conteudo:
+            Post.objects.create(autor=request.user, conteudo=conteudo)
+            return redirect('feed')
+    return render(request, 'posts/criar_post.html')
+
+@login_required
+def feed(request):
+    posts = Post.objects.all().order_by('-criado_em')
+    return render(request, 'posts/feed.html', {'posts': posts})

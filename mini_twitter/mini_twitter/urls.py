@@ -16,4 +16,5 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('', include('accounts.urls')),  # Adicionando o path vazio para renderizar a página inicial
     path('accounts/', include('accounts.urls')),
+    path('', include('core.urls')),
 ]
