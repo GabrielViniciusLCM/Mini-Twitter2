@@ -1,7 +1,11 @@
-<h2>Confirmar exclusão do post</h2>
-<p>{{ post.texto }}</p>
-<form method="post">
-  {% csrf_token %}
-  <button type="submit">Confirmar</button>
-</form>
-<a href="{% url 'feed' %}">Cancelar</a>
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Confirmar exclusão do post</h2>
+  <p>{{ post.conteudo }}</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Confirmar</button>
+    <a href="{% url 'feed' %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+{% endblock %}

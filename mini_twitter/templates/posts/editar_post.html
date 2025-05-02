@@ -1,7 +1,13 @@
-<h2>Editar Post</h2>
-<form method="post">
-  {% csrf_token %}
-  <textarea name="conteudo" rows="4" cols="50">{{ post.conteudo }}</textarea><br>
-  <button type="submit">Salvar</button>
-</form>
-<a href="{% url 'feed' %}">Cancelar</a>
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Editar Post</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <textarea name="conteudo" class="form-control" rows="4">{{ post.conteudo }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="{% url 'feed' %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+{% endblock %}
