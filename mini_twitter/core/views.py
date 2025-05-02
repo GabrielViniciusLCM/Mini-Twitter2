@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post, User
 from .serializers import PostSerializer, UserSerializer
 
@@ -67,3 +67,33 @@ def criar_post(request):
 def feed(request):
     posts = Post.objects.all().order_by('-criado_em')
     return render(request, 'posts/feed.html', {'posts': posts})
+
+@login_required
+def editar_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if request.user != post.autor:
+        return redirect('feed')
+
+    if request.method == 'POST':
+        novo_texto = request.POST.get('conteudo')
+        if novo_texto:
+            post.conteudo = novo_texto
+            post.save()
+            return redirect('feed')
+
+    return render(request, 'posts/editar_post.html', {'post': post})
+
+@login_required
+def deletar_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if request.user != post.autor:
+        return redirect('feed')
+
+    if request.method == 'POST':
+        post.delete()
+        return redirect('feed')
+
+    return render(request, 'posts/confirmar_delete.html', {'post': post})
+

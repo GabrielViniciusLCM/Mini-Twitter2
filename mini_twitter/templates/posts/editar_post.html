@@ -1,0 +1,7 @@
+<h2>Editar Post</h2>
+<form method="post">
+  {% csrf_token %}
+  <textarea name="conteudo" rows="4" cols="50">{{ post.conteudo }}</textarea><br>
+  <button type="submit">Salvar</button>
+</form>
+<a href="{% url 'feed' %}">Cancelar</a>
