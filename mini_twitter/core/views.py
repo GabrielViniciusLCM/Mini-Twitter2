@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post, User
 from .serializers import PostSerializer, UserSerializer
+from django.core.paginator import Paginator
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-criado_em')
@@ -65,8 +66,13 @@ def criar_post(request):
 
 @login_required
 def feed(request):
-    posts = Post.objects.all().order_by('-criado_em')
-    return render(request, 'posts/feed.html', {'posts': posts})
+    posts_list = Post.objects.all().order_by('-criado_em')  # ordena do mais recente ao mais antigo
+    paginator = Paginator(posts_list, 5)  # 5 posts por página
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'posts/feed.html', {'page_obj': page_obj})
 
 @login_required
 def editar_post(request, post_id):
