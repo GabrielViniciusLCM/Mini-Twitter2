@@ -30,18 +30,25 @@
   {% endif %}
 
   {% for post in page_obj %}
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">{{ post.autor.username }}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">{{ post.criado_em|date:"d/m/Y H:i" }}</h6>
-        <p class="card-text">{{ post.conteudo }}</p>
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">{{ post.autor.username }}</h5>
+      <h6 class="card-subtitle mb-2 text-muted">{{ post.criado_em|date:"d/m/Y H:i" }}</h6>
+      <p class="card-text">{{ post.conteudo }}</p>
 
-        {% if request.user == post.autor %}
-          <a href="{% url 'editar_post' post.id %}" class="card-link">Editar</a>
-          <a href="{% url 'deletar_post' post.id %}" class="card-link text-danger">Deletar</a>
-        {% endif %}
-      </div>
+      <form action="{% url 'curtir_post' post.id %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm {% if user in post.likes.all %}btn-danger{% else %}btn-outline-danger{% endif %}">
+          ❤️ {{ post.total_likes }}
+        </button>
+      </form>
+
+      {% if request.user == post.autor %}
+        <a href="{% url 'editar_post' post.id %}" class="card-link">Editar</a>
+        <a href="{% url 'deletar_post' post.id %}" class="card-link text-danger">Deletar</a>
+      {% endif %}
     </div>
+  </div>
   {% empty %}
     <p>Nenhum post encontrado.</p>
   {% endfor %}

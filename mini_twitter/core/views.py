@@ -136,3 +136,14 @@ def perfil_usuario(request, user_id):
         'usuario': usuario,
         'posts': posts
     })
+
+@login_required
+def curtir_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)  # Descurtir
+    else:
+        post.likes.add(request.user)  # Curtir
+
+    return redirect(request.META.get('HTTP_REFERER', 'feed'))

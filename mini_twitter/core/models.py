@@ -10,6 +10,10 @@ class Post(models.Model):
     autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='posts')
     conteudo = models.TextField(max_length=280, default='Texto padrão')
     criado_em = models.DateTimeField(default=timezone.now)
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='posts_curtidos', blank=True)
 
     def __str__(self):
-        return f'{self.user.username}: {self.content[:20]}'
+        return f'{self.autor.username}: {self.conteudo[:20]}'
+
+    def total_likes(self):
+        return self.likes.count()

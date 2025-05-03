@@ -17,4 +17,5 @@ urlpatterns = [
     path('seguir/<int:user_id>/', views.seguir_usuario, name='seguir_usuario'),
     path('deseguir/<int:user_id>/', views.deseguir_usuario, name='deseguir_usuario'),
     path('usuario/<int:user_id>/', views.perfil_usuario, name='perfil_usuario'),
+    path('post/<int:post_id>/curtir/', views.curtir_post, name='curtir_post'),
 ]
