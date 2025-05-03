@@ -66,13 +66,26 @@ def criar_post(request):
 
 @login_required
 def feed(request):
-    posts_list = Post.objects.all().order_by('-criado_em')  # ordena do mais recente ao mais antigo
-    paginator = Paginator(posts_list, 5)  # 5 posts por página
+    termo_busca = request.GET.get('busca', '').strip()
 
+    usuarios_encontrados = None
+    if termo_busca:
+        usuarios_encontrados = User.objects.filter(username__icontains=termo_busca).exclude(id=request.user.id)
+
+    seguindo = request.user.following.all()
+
+    # INCLUIR os próprios posts no feed também:
+    posts_list = Post.objects.filter(autor__in=list(seguindo) + [request.user]).order_by('-criado_em')
+
+    paginator = Paginator(posts_list, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'posts/feed.html', {'page_obj': page_obj})
+    return render(request, 'posts/feed.html', {
+        'page_obj': page_obj,
+        'termo_busca': termo_busca,
+        'usuarios_encontrados': usuarios_encontrados,
+    })
 
 @login_required
 def editar_post(request, post_id):
@@ -103,3 +116,23 @@ def deletar_post(request, post_id):
 
     return render(request, 'posts/confirmar_delete.html', {'post': post})
 
+@login_required
+def seguir_usuario(request, user_id):
+    usuario_para_seguir = get_object_or_404(User, id=user_id)
+    request.user.following.add(usuario_para_seguir)
+    return redirect('perfil_usuario', user_id=user_id)
+
+@login_required
+def deseguir_usuario(request, user_id):
+    usuario_para_deseguir = get_object_or_404(User, id=user_id)
+    request.user.following.remove(usuario_para_deseguir)
+    return redirect('perfil_usuario', user_id=user_id)
+
+@login_required
+def perfil_usuario(request, user_id):
+    usuario = get_object_or_404(User, id=user_id)
+    posts = usuario.posts.all().order_by('-criado_em')
+    return render(request, 'core/perfil_usuario.html', {
+        'usuario': usuario,
+        'posts': posts
+    })
