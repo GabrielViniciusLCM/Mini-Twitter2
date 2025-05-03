@@ -1,27 +1,53 @@
 {% extends "base.html" %}
 {% block content %}
+
 <h2>Perfil de {{ usuario.username }}</h2>
 
+<p>
+  {{ seguidores_count }} seguidor{{ seguidores_count|pluralize }} •
+  {{ seguindo.count }} seguindo
+</p>
+
 {% if user != usuario %}
-    {% if usuario in user.following.all %}
-        <a href="{% url 'deseguir_usuario' usuario.id %}" class="btn btn-danger">Deixar de seguir</a>
-    {% else %}
-        <a href="{% url 'seguir_usuario' usuario.id %}" class="btn btn-primary">Seguir</a>
-    {% endif %}
+  {% if usuario in user.following.all %}
+    <a href="{% url 'deseguir_usuario' usuario.id %}" class="btn btn-danger">Deixar de seguir</a>
+  {% else %}
+    <a href="{% url 'seguir_usuario' usuario.id %}" class="btn btn-primary">Seguir</a>
+  {% endif %}
 {% endif %}
+
+<hr>
+
+<h5>Seguindo ({{ seguindo.count }})</h5>
+<ul>
+  {% for u in seguindo %}
+    <li><a href="{% url 'perfil_usuario' u.id %}">{{ u.username }}</a></li>
+  {% empty %}
+    <li>Não segue ninguém ainda.</li>
+  {% endfor %}
+</ul>
+
+<h5>Seguidores ({{ seguidores.count }})</h5>
+<ul>
+  {% for u in seguidores %}
+    <li><a href="{% url 'perfil_usuario' u.id %}">{{ u.username }}</a></li>
+  {% empty %}
+    <li>Sem seguidores ainda.</li>
+  {% endfor %}
+</ul>
 
 <hr>
 
 <h4>Posts de {{ usuario.username }}</h4>
 {% for post in posts %}
-    <div class="card my-3">
-        <div class="card-body">
-            <p>{{ post.conteudo }}</p>
-            <small class="text-muted">{{ post.criado_em|date:"d/m/Y H:i" }}</small>
-        </div>
+  <div class="card my-3">
+    <div class="card-body">
+      <p>{{ post.conteudo }}</p>
+      <small class="text-muted">{{ post.criado_em|date:"d/m/Y H:i" }}</small>
     </div>
+  </div>
 {% empty %}
-    <p>Este usuário ainda não postou nada.</p>
+  <p>Este usuário ainda não postou nada.</p>
 {% endfor %}
 
 {% endblock %}

@@ -132,9 +132,19 @@ def deseguir_usuario(request, user_id):
 def perfil_usuario(request, user_id):
     usuario = get_object_or_404(User, id=user_id)
     posts = usuario.posts.all().order_by('-criado_em')
+
+    eh_proprio_perfil = request.user == usuario
+    seguidores_count = usuario.followers.count()
+    seguindo = usuario.following.all()
+    seguidores = usuario.followers.all()
+
     return render(request, 'core/perfil_usuario.html', {
         'usuario': usuario,
-        'posts': posts
+        'posts': posts,
+        'eh_proprio_perfil': eh_proprio_perfil,
+        'seguidores_count': seguidores_count,
+        'seguindo': seguindo,
+        'seguidores': seguidores,
     })
 
 @login_required
