@@ -1,11 +1,55 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Nova Postagem</h2>
-  <form method="post" enctype="multipart/form-data">
+  <div class="container mt-4">
+    <h2 class="mb-4">Nova Postagem</h2>
+
+    <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      <textarea name="conteudo" rows="3" class="form-control mb-2" placeholder="O que está acontecendo?"></textarea>
-      <input type="file" name="imagem" accept="image/*" class="form-control mb-2">
-      <button type="submit" class="btn btn-primary">Postar</button>
-  </form>
+
+      <!-- Campo de texto para conteúdo do post -->
+      <div class="mb-3">
+        <textarea name="conteudo" rows="3" class="form-control mb-2" placeholder="O que está acontecendo?" required></textarea>
+      </div>
+
+      <!-- Campo para upload da imagem -->
+      <div class="mb-3">
+        <label for="imagem" class="form-label">Imagem (opcional)</label>
+        <input type="file" name="imagem" accept="image/*" class="form-control" onchange="previewImagem(event)">
+      </div>
+
+      <!-- Pré-visualização da imagem -->
+      <div id="preview-container" class="mt-3" style="display: none;">
+        <p>Pré-visualização:</p>
+        <img id="preview" class="img-fluid rounded" style="max-height: 300px;" />
+      </div>
+
+      <!-- Botões -->
+      <div class="d-flex justify-content-between mt-3">
+        <button type="submit" class="btn btn-primary">Postar</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Função para exibir a pré-visualização da imagem selecionada
+    function previewImagem(event) {
+      const input = event.target;
+      const preview = document.getElementById('preview');
+      const container = document.getElementById('preview-container');
+
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          preview.src = e.target.result;
+          container.style.display = 'block'; // Exibe a pré-visualização
+        };
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        preview.src = '';
+        container.style.display = 'none'; // Oculta a pré-visualização
+      }
+    }
+  </script>
+
 {% endblock %}

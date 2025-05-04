@@ -102,11 +102,17 @@ def editar_post(request, post_id):
     if request.method == 'POST':
         novo_texto = request.POST.get('conteudo', '').strip()
         nova_imagem = request.FILES.get('imagem')
+        remover_imagem = request.POST.get('remover_imagem')
 
         if novo_texto:
             post.conteudo = novo_texto
-            if nova_imagem:
-                post.imagem = nova_imagem  # substitui imagem existente, se houver
+
+            if remover_imagem:
+                post.imagem.delete(save=False)
+                post.imagem = None
+            elif nova_imagem:
+                post.imagem = nova_imagem
+
             post.save()
             return redirect('perfil_usuario', post.autor.id)
         else:
