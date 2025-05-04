@@ -4,8 +4,12 @@
 <h2>Perfil de {{ usuario.username }}</h2>
 
 <p>
-  {{ seguidores_count }} seguidor{{ seguidores_count|pluralize }} •
-  {{ seguindo.count }} seguindo
+  <a href="#" data-bs-toggle="modal" data-bs-target="#modalSeguidores">
+    {{ seguidores_count }} seguidor{{ seguidores_count|pluralize }}
+  </a> • 
+  <a href="#" data-bs-toggle="modal" data-bs-target="#modalSeguindo">
+    {{ seguindo.count }} seguindo
+  </a>
 </p>
 
 {% if user != usuario %}
@@ -15,26 +19,6 @@
     <a href="{% url 'seguir_usuario' usuario.id %}" class="btn btn-primary">Seguir</a>
   {% endif %}
 {% endif %}
-
-<hr>
-
-<h5>Seguindo ({{ seguindo.count }})</h5>
-<ul>
-  {% for u in seguindo %}
-    <li><a href="{% url 'perfil_usuario' u.id %}">{{ u.username }}</a></li>
-  {% empty %}
-    <li>Não segue ninguém ainda.</li>
-  {% endfor %}
-</ul>
-
-<h5>Seguidores ({{ seguidores.count }})</h5>
-<ul>
-  {% for u in seguidores %}
-    <li><a href="{% url 'perfil_usuario' u.id %}">{{ u.username }}</a></li>
-  {% empty %}
-    <li>Sem seguidores ainda.</li>
-  {% endfor %}
-</ul>
 
 <hr>
 
@@ -49,5 +33,55 @@
 {% empty %}
   <p>Este usuário ainda não postou nada.</p>
 {% endfor %}
+
+
+<!-- Modal de Seguidores -->
+<div class="modal fade" id="modalSeguidores" tabindex="-1" aria-labelledby="modalSeguidoresLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalSeguidoresLabel">Seguidores</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+          {% for u in seguidores %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <a href="{% url 'perfil_usuario' u.id %}">{{ u.username }}</a>
+            </li>
+          {% empty %}
+            <li class="list-group-item">Sem seguidores ainda.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Seguindo -->
+<div class="modal fade" id="modalSeguindo" tabindex="-1" aria-labelledby="modalSeguindoLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalSeguindoLabel">Seguindo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+          {% for u in seguindo %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <a href="{% url 'perfil_usuario' u.id %}">{{ u.username }}</a>
+            </li>
+          {% empty %}
+            <li class="list-group-item">Não segue ninguém ainda.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS (necessário para os modais) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 {% endblock %}
