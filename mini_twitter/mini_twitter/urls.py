@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from django.shortcuts import redirect
 
 # Importe uma view simples
 from django.http import HttpResponse
@@ -9,7 +10,11 @@ from django.http import HttpResponse
 def home(request):
     return HttpResponse("Bem-vindo ao Mini Twitter!")
 
+def redirect_to_home(request):
+    return redirect('/home/')
+
 urlpatterns = [
+    path('', redirect_to_home), 
     path('admin/', admin.site.urls),
     path('api/', include('core.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
