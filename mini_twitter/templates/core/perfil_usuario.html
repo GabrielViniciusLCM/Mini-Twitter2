@@ -27,6 +27,13 @@
   <div class="card my-3">
     <div class="card-body">
       <p>{{ post.conteudo }}</p>
+      {% if post.imagem %}
+        <img src="{{ post.imagem.url }}" class="img-fluid post-image" alt="Imagem do post">
+      {% endif %}
+      {% if request.user == post.autor %}
+        <a href="{% url 'editar_post' post.id %}" class="card-link">Editar</a>
+        <a href="{% url 'deletar_post' post.id %}" class="card-link text-danger">Deletar</a>
+      {% endif %}
       <small class="text-muted">{{ post.criado_em|date:"d/m/Y H:i" }}</small>
     </div>
   </div>

@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post, User
 from .serializers import PostSerializer, UserSerializer
 from django.core.paginator import Paginator
+from django.contrib import messages
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-criado_em')
@@ -59,9 +60,12 @@ class UserViewSet(viewsets.ModelViewSet):
 def criar_post(request):
     if request.method == 'POST':
         conteudo = request.POST.get('conteudo')
-        if conteudo:
-            Post.objects.create(autor=request.user, conteudo=conteudo)
+        imagem = request.FILES.get('imagem')  # <- importante
+
+        if conteudo or imagem:
+            Post.objects.create(autor=request.user, conteudo=conteudo, imagem=imagem)
             return redirect('feed')
+
     return render(request, 'posts/criar_post.html')
 
 @login_required
@@ -92,14 +96,21 @@ def editar_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
 
     if request.user != post.autor:
+        messages.error(request, "Você não tem permissão para editar este post.")
         return redirect('feed')
 
     if request.method == 'POST':
-        novo_texto = request.POST.get('conteudo')
+        novo_texto = request.POST.get('conteudo', '').strip()
+        nova_imagem = request.FILES.get('imagem')
+
         if novo_texto:
             post.conteudo = novo_texto
+            if nova_imagem:
+                post.imagem = nova_imagem  # substitui imagem existente, se houver
             post.save()
-            return redirect('feed')
+            return redirect('perfil_usuario', post.autor.id)
+        else:
+            messages.error(request, "O conteúdo do post não pode estar vazio.")
 
     return render(request, 'posts/editar_post.html', {'post': post})
 

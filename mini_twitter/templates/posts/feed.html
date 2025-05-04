@@ -35,6 +35,9 @@
       <h5 class="card-title">{{ post.autor.username }}</h5>
       <h6 class="card-subtitle mb-2 text-muted">{{ post.criado_em|date:"d/m/Y H:i" }}</h6>
       <p class="card-text">{{ post.conteudo }}</p>
+      {% if post.imagem %}
+        <img src="{{ post.imagem.url }}" class="img-fluid post-image" alt="Imagem do post">
+      {% endif %}
 
       <form action="{% url 'curtir_post' post.id %}" method="post" style="display: inline;">
         {% csrf_token %}

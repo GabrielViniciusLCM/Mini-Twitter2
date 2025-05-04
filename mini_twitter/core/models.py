@@ -9,6 +9,7 @@ class User(AbstractUser):
 class Post(models.Model):
     autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='posts')
     conteudo = models.TextField(max_length=280, default='Texto padrão')
+    imagem = models.ImageField(upload_to='posts/', null=True, blank=True)
     criado_em = models.DateTimeField(default=timezone.now)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='posts_curtidos', blank=True)
 

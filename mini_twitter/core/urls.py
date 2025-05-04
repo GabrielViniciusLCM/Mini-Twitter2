@@ -2,6 +2,8 @@ from rest_framework.routers import DefaultRouter
 from .views import PostViewSet, UserViewSet
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 router = DefaultRouter()
@@ -19,3 +21,6 @@ urlpatterns = [
     path('usuario/<int:user_id>/', views.perfil_usuario, name='perfil_usuario'),
     path('post/<int:post_id>/curtir/', views.curtir_post, name='curtir_post'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
